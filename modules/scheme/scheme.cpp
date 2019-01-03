@@ -49,6 +49,7 @@ Scheme::_bind_methods ()
   ClassDB::bind_method (D_METHOD ("add", "value"), &Scheme::add);
   ClassDB::bind_method (D_METHOD ("reset"), &Scheme::reset);
   ClassDB::bind_method (D_METHOD ("get_total"), &Scheme::get_total);
+  ClassDB::bind_method (D_METHOD ("listen"), &Scheme::listen);
 }
 
 Scheme::Scheme ()
