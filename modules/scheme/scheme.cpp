@@ -33,10 +33,15 @@ guile_eval (void* data)
 
   cout << "Evaluation target: " << eval << endl;
 
-  return scm_c_eval_string (eval);
+  // return scm_c_eval_string (eval);
 
-  // works
-  // return scm_c_eval_string ("(number->string 555)");
+  // Hey, what the heck, lets fire off a server thread and see what happens.
+
+  // works - actually, it seems like string literal is ok, problem may be with the eval pointer.
+  // Well, this is interesting.  We could run any scheme our repl receives - could it call
+  // native godot calls from this vantage point?
+  // If so, nice interactive workflow for game development (how would this bundle at runtime though?)
+  return scm_c_eval_string ("(use-modules (system repl server)) (spawn-server (make-tcp-server-socket #:port 12345)) (number->string 555)");
 
   // Will not work - wrong-type-arg throw
   // (use-modules (ice-9 format))
