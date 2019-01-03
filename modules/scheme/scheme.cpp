@@ -25,10 +25,18 @@ Scheme::processInput(Ref<Reference> customScriptInstance)
 {
   Variant ret = customScriptInstance->call("getInputs");
 
-  cout << "Got some variant return from a class using processInput call." << endl;
-  // cout << ret << endl;
+  String res = ret.get_construct_string ();
+  std::wstring ws = res.c_str ();
+  std::string s (ws.begin (), ws.end ());
 
-  return "Hello from your own class!";
+  cout << "Got some variant return from a class using processInput call." << endl;
+  cout << s << endl;
+
+  std::string sj = "Hello from your own class!" + s;
+
+  String godotstr (sj.c_str ());
+
+  return godotstr;
 }
 
 static void*
