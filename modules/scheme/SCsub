@@ -17,11 +17,14 @@ sources = [
 module_env = env.Clone()
 module_env.Append(CXXFLAGS=['-O2', '-std=c++11'])
 
-if ARGUMENTS.get('summator_shared', 'no') == 'yes':
+# TODO: Figure out how to dynamically run/insert
+# guile-config compile: -I/usr/include/guile/2.2 -pthread
+# guile-config link: -lguile-2.2 -lgc
+if ARGUMENTS.get('scheme_shared', 'no') == 'yes':
     # Shared lib compilation
-    module_env.Append(CXXFLAGS='-fPIC')
+    module_env.Append(CXXFLAGS='-fPIC -lguile-2.2 -lgc -I/usr/include/guile/2.2 -pthread')
     module_env['LIBS'] = []
-    shared_lib = module_env.SharedLibrary(target='#bin/summator', source=sources)
+    shared_lib = module_env.SharedLibrary(target='#bin/scheme', source=sources)
     shared_lib_shim = shared_lib[0].name.rsplit('.', 1)[0]
     env.Append(LIBS=[shared_lib_shim])
     env.Append(LIBPATH=['#bin'])
