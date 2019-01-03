@@ -1,5 +1,7 @@
 # Compiling just the module as a so
 
+https://godotengine.org/article/godot-getting-more-languages
+
 in project root:
 
 scons scheme_shared=yes platform=x11 bin/libscheme.x11.tools.64.so
