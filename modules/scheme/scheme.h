@@ -20,7 +20,7 @@ protected:
   static void _bind_methods ();
 
 public:
-  void processInput (Ref<Reference> customScriptInstance);
+  String processInput (Ref<Reference> customScriptInstance);
   double listen (double x);
   String eval (String scm);
   void add (int value);

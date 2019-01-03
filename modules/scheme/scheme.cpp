@@ -20,10 +20,15 @@ my_add (SCM num)
   return scm_from_double (sum);
 }
 
-void
+String
 Scheme::processInput(Ref<Reference> customScriptInstance)
 {
   Variant ret = customScriptInstance->call("getInputs");
+
+  cout << "Got some variant return from a class using processInput call." << endl;
+  // cout << ret << endl;
+
+  return "Hello from your own class!";
 }
 
 static void*
