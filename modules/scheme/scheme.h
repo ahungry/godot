@@ -15,7 +15,7 @@ protected:
   static void _bind_methods ();
 
 public:
-  int listen ();
+  int listen (double x);
   void add (int value);
   void reset ();
   int get_total () const;
