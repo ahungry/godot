@@ -1,6 +1,7 @@
 // -*- mode: c++; -*-
 /* scheme.cpp */
 
+// https://godotengine.org/article/dlscript-here
 // http://docs.godotengine.org/en/latest/development/cpp/custom_modules_in_cpp.html
 
 // https://gamedevadventures.posthaven.com/using-c-plus-plus-and-gdnative-in-godot-part-1
@@ -8,9 +9,29 @@
 
 using namespace std;
 
+double sum = 0;
+
+static SCM
+my_add (SCM num)
+{
+  const double val = scm_to_double (num);
+  sum += val;
+
+  return scm_from_double (sum);
+}
+
+void
+Scheme::processInput(Ref<Reference> customScriptInstance)
+{
+  Variant ret = customScriptInstance->call("getInputs");
+}
+
 static void*
 register_functions (void* data)
 {
+  // req, opt, &rest
+  scm_c_define_gsubr ("process-input", 1, 0, 0, (void*) &Scheme::processInput);
+
   return NULL;
 }
 
@@ -41,6 +62,14 @@ guile_eval (void* data)
   // Well, this is interesting.  We could run any scheme our repl receives - could it call
   // native godot calls from this vantage point?
   // If so, nice interactive workflow for game development (how would this bundle at runtime though?)
+
+  // https://godotengine.org/qa/21208/pass-a-gdscript-class-as-reference-in-a-cpp-module
+  // we would need to set the script first in gdscript, then call things in it over here
+  scm_c_define_gsubr ("process-input", 1, 0, 0, (void*) &Scheme::processInput);
+
+  // lets try to just bind any old cpp call in here we can reach via scheme
+  scm_c_define_gsubr ("my-add", 1, 0, 0, (void*) &my_add);
+
   return scm_c_eval_string ("(use-modules (system repl server)) (spawn-server (make-tcp-server-socket #:port 12345)) (number->string 555)");
 
   // Will not work - wrong-type-arg throw
@@ -121,6 +150,7 @@ Scheme::_bind_methods ()
   ClassDB::bind_method (D_METHOD ("get_total"), &Scheme::get_total);
   ClassDB::bind_method (D_METHOD ("listen", "x"), &Scheme::listen);
   ClassDB::bind_method (D_METHOD ("eval", "scm"), &Scheme::eval);
+  ClassDB::bind_method (D_METHOD ("processInput", "customScriptInstance"), &Scheme::processInput);
 }
 
 Scheme::Scheme ()
