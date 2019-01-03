@@ -139,7 +139,8 @@ Scheme::reset ()
 int
 Scheme::get_total () const
 {
-  return count;
+  // return count;
+  return (int) sum;
 }
 
 void
