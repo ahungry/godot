@@ -3,6 +3,11 @@
 #ifndef SCHEME_H
 #define SCHEME_H
 
+// #include <core/Godot.hpp>
+// #include <core/String.hpp>
+// #include <core/Array.hpp>
+#include <string>
+#include <iostream>
 #include <libguile.h>
 #include "core/reference.h"
 
@@ -15,7 +20,8 @@ protected:
   static void _bind_methods ();
 
 public:
-  int listen (double x);
+  double listen (double x);
+  String eval (String scm);
   void add (int value);
   void reset ();
   int get_total () const;
