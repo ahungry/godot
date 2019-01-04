@@ -28,6 +28,7 @@ static SCM
 my_fn (SCM name)
 {
   char* result = scm_to_stringn (name, NULL, "ascii", SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE);
+  cout << "Call my-fn as: " << result << endl;
   Variant ret = registeredFnInstance->call(result);
   String res = ret.get_construct_string ();
   std::wstring ws = res.c_str ();
@@ -39,11 +40,15 @@ my_fn (SCM name)
 
 // This needs to be an array or something, not just an override at last bind point.
 void
-Scheme::registerFn(int idx, Ref<Reference> customScriptInstance, char* name)
+Scheme::registerFn(int idx, Ref<Reference> customScriptInstance, String wname)
 {
+  std::wstring ws = wname.c_str ();
+  std::string s (ws.begin (), ws.end ());
+
   registeredFnIdx = idx;
   registeredFnInstance = customScriptInstance;
-  strcpy (registeredFnName, name);
+
+  strcpy (registeredFnName, s.c_str ());
 }
 
 String
@@ -208,6 +213,7 @@ Scheme::_bind_methods ()
   ClassDB::bind_method (D_METHOD ("eval", "scm"), &Scheme::eval);
   ClassDB::bind_method (D_METHOD ("repl"), &Scheme::repl);
   ClassDB::bind_method (D_METHOD ("processInput", "customScriptInstance"), &Scheme::processInput);
+  ClassDB::bind_method (D_METHOD ("registerFn", "idx", "customScriptInstance", "name"), &Scheme::registerFn);
 }
 
 Scheme::Scheme ()
