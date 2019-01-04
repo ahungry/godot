@@ -31,7 +31,7 @@ my_fn (SCM name)
 {
   char* result = scm_to_stringn (name, NULL, "ascii", SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE);
   cout << "Call my-fn as: " << result << endl;
-  Variant ret = (selfPtr)->call("getNumber");
+  Variant ret = (selfPtr)->call(result);
   // Variant ret = selfPtr->call("getNumber");
   // Variant ret = (*registeredFnInstance)->call(result);
   // See: https://stackoverflow.com/questions/1485983/calling-c-class-methods-via-a-function-pointer
@@ -51,7 +51,7 @@ my_fn (SCM name)
 int
 Scheme::getNumber ()
 {
-  Variant ret = (selfPtr)->call("getNumber");
+  Variant ret = (selfPtr)->call("getInputs");
   int n = (int) ret;
 
   cout << "It may not be right, but n was: " << n << endl;

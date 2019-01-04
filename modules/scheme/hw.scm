@@ -10,9 +10,12 @@
 (define (doubler n)
   (+ n n))
 
-;; Mutates state outside of scheme
+;; Mutates state outside of scheme in base cpp class
 (my-add (doubler 32))
 (my-add (doubler 2))
+
+;; Lets us call to a GDScript function we register
+(my-add (my-fn "getInputs"))
 
 (all-strings
  (doubler 5))
