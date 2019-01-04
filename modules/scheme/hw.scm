@@ -10,5 +10,9 @@
 (define (doubler n)
   (+ n n))
 
+;; Mutates state outside of scheme
+(my-add (doubler 32))
+(my-add (doubler 2))
+
 (all-strings
  (doubler 5))
