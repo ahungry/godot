@@ -63,11 +63,10 @@ static void*
 guile_eval (void* data)
 {
   // https://www.gnu.org/software/guile/manual/html_node/Fly-Evaluation.html
-  const char* eval = ((char*) data);
+  // const char* eval = ((char*) data);
+  const char* eval = *((char**) data);
 
   cout << "Evaluation target: " << eval << endl;
-
-  // return scm_c_eval_string (eval);
 
   // Hey, what the heck, lets fire off a server thread and see what happens.
 
@@ -83,7 +82,8 @@ guile_eval (void* data)
   // lets try to just bind any old cpp call in here we can reach via scheme
   scm_c_define_gsubr ("my-add", 1, 0, 0, (void*) &my_add);
 
-  return scm_c_eval_string ("(use-modules (system repl server)) (spawn-server (make-tcp-server-socket #:port 12345)) (number->string 555)");
+  return scm_c_eval_string (eval);
+  // return scm_c_eval_string ("(use-modules (system repl server)) (spawn-server (make-tcp-server-socket #:port 12345)) (number->string 555)");
 
   // Will not work - wrong-type-arg throw
   // (use-modules (ice-9 format))
@@ -103,6 +103,12 @@ Scheme::eval (String scm)
   std::string lisp = preamble + s + postamble;
 
   cout << lisp << endl;
+
+  int len = s.length ();
+
+  cout << "The length is: ";
+  cout << len << endl;
+
   // cout << scm << endl;
   // scm_with_guile (&register_functions, NULL);
   // scm_shell (0, NULL);
