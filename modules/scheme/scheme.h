@@ -23,6 +23,7 @@ public:
   String processInput (Ref<Reference> customScriptInstance);
   double listen (double x);
   String eval (String scm);
+  void repl ();
   void add (int value);
   void reset ();
   int get_total () const;

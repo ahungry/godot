@@ -13,7 +13,15 @@ func scheme():
 	#s.reset()
 	printt(s.listen(3.3))
 	printt(s.eval("(+ 1 2 3)"))
+	printt(s.repl())
 	printt(s.processInput(InputHandler.new()))
+
+func load_scm():
+	var fh = File.new()
+	fh.open("res://hw.scm", fh.READ)
+	var scm = fh.get_as_text()
+	fh.close()
+	s.eval(scm)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

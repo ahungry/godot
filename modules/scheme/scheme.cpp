@@ -60,6 +60,15 @@ guile_number_doubler (void* data)
 }
 
 static void*
+guile_repl (void* _data)
+{
+  scm_c_define_gsubr ("process-input", 1, 0, 0, (void*) &Scheme::processInput);
+  scm_c_define_gsubr ("my-add", 1, 0, 0, (void*) &my_add);
+
+  return scm_c_eval_string ("(use-modules (system repl server)) (spawn-server (make-tcp-server-socket #:port 12345)) (number->string 555)");
+}
+
+static void*
 guile_eval (void* data)
 {
   // https://www.gnu.org/software/guile/manual/html_node/Fly-Evaluation.html
@@ -68,14 +77,7 @@ guile_eval (void* data)
 
   cout << "Evaluation target: " << eval << endl;
 
-  // Hey, what the heck, lets fire off a server thread and see what happens.
-
-  // works - actually, it seems like string literal is ok, problem may be with the eval pointer.
-  // Well, this is interesting.  We could run any scheme our repl receives - could it call
-  // native godot calls from this vantage point?
-  // If so, nice interactive workflow for game development (how would this bundle at runtime though?)
-
-  // https://godotengine.org/qa/21208/pass-a-gdscript-class-as-reference-in-a-cpp-module
+    // https://godotengine.org/qa/21208/pass-a-gdscript-class-as-reference-in-a-cpp-module
   // we would need to set the script first in gdscript, then call things in it over here
   scm_c_define_gsubr ("process-input", 1, 0, 0, (void*) &Scheme::processInput);
 
@@ -83,11 +85,14 @@ guile_eval (void* data)
   scm_c_define_gsubr ("my-add", 1, 0, 0, (void*) &my_add);
 
   return scm_c_eval_string (eval);
-  // return scm_c_eval_string ("(use-modules (system repl server)) (spawn-server (make-tcp-server-socket #:port 12345)) (number->string 555)");
+}
 
-  // Will not work - wrong-type-arg throw
-  // (use-modules (ice-9 format))
-  // return scm_c_eval_string ("(use-modules (ice-9 format)) (format #t \"~a\" (+ 1 2 3 4))");
+void
+Scheme::repl ()
+{
+  scm_with_guile (&guile_repl, NULL);
+
+  return;
 }
 
 String
@@ -96,11 +101,15 @@ Scheme::eval (String scm)
   cout << "Time to eval" << endl;
 
   std::wstring ws = scm.c_str ();
-  // std::string s (ws.begin (), ws.end ());
-  std::string s = "(+ 1 2 3)";
-  std::string preamble = "(begin (define (all-strings s) (if (string? s) s (number->string s))) (all-strings ";
-  std::string postamble = "))";
-  std::string lisp = preamble + s + postamble;
+  std::string s (ws.begin (), ws.end ());
+  // std::string s = "(+ 1 2 3)";
+
+  // This wrapper could still be useful for simple syntax not from file
+  // But it will not work well from file
+  // std::string preamble = "(begin (define (all-strings s) (if (string? s) s (number->string s))) (all-strings ";
+  // std::string postamble = "))";
+  // std::string lisp = preamble + s + postamble;
+  std::string lisp = s;
 
   cout << lisp << endl;
 
@@ -170,6 +179,7 @@ Scheme::_bind_methods ()
   ClassDB::bind_method (D_METHOD ("get_total"), &Scheme::get_total);
   ClassDB::bind_method (D_METHOD ("listen", "x"), &Scheme::listen);
   ClassDB::bind_method (D_METHOD ("eval", "scm"), &Scheme::eval);
+  ClassDB::bind_method (D_METHOD ("repl"), &Scheme::repl);
   ClassDB::bind_method (D_METHOD ("processInput", "customScriptInstance"), &Scheme::processInput);
 }
 
