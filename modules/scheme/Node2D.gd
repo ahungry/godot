@@ -20,6 +20,7 @@ func scheme():
 	printt(s.processInput(InputHandler.new()))
 	# Inject a GDScript class function into the cpp area
 	printt(s.registerFn(0, self, 'getNumber'))
+	s.registerFn(0, self, "getNumber")
 
 func load_scm():
 	var fh = File.new()
