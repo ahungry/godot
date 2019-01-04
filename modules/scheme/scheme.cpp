@@ -20,6 +20,32 @@ my_add (SCM num)
   return scm_from_double (sum);
 }
 
+int registeredFnIdx = 0;
+Ref<Reference> registeredFnInstance = NULL;
+char registeredFnName[100];
+
+static SCM
+my_fn (SCM name)
+{
+  char* result = scm_to_stringn (name, NULL, "ascii", SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE);
+  Variant ret = registeredFnInstance->call(result);
+  String res = ret.get_construct_string ();
+  std::wstring ws = res.c_str ();
+  std::string s (ws.begin (), ws.end ());
+  int i = atoi (s.c_str ());
+
+  return scm_from_int (i);
+}
+
+// This needs to be an array or something, not just an override at last bind point.
+void
+Scheme::registerFn(int idx, Ref<Reference> customScriptInstance, char* name)
+{
+  registeredFnIdx = idx;
+  registeredFnInstance = customScriptInstance;
+  strcpy (registeredFnName, name);
+}
+
 String
 Scheme::processInput(Ref<Reference> customScriptInstance)
 {
@@ -83,6 +109,7 @@ guile_eval (void* data)
 
   // lets try to just bind any old cpp call in here we can reach via scheme
   scm_c_define_gsubr ("my-add", 1, 0, 0, (void*) &my_add);
+  scm_c_define_gsubr ("my-fn", 1, 0, 0, (void*) &my_fn);
 
   return scm_c_eval_string (eval);
 }

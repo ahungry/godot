@@ -2,6 +2,9 @@ extends Node2D
 
 var s = Scheme.new()
 
+func getNumber():
+	return 99
+
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -15,6 +18,8 @@ func scheme():
 	printt(s.eval("(+ 1 2 3)"))
 	printt(s.repl())
 	printt(s.processInput(InputHandler.new()))
+	# Inject a GDScript class function into the cpp area
+	printt(s.registerFn(0, self, 'getNumber'))
 
 func load_scm():
 	var fh = File.new()

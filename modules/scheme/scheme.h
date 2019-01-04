@@ -24,6 +24,7 @@ public:
   double listen (double x);
   String eval (String scm);
   void repl ();
+  void registerFn (int idx, Ref<Reference> customScriptInstance, char* name);
   void add (int value);
   void reset ();
   int get_total () const;
