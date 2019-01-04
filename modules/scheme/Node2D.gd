@@ -15,12 +15,14 @@ func scheme():
 	#print(s.get_total())
 	#s.reset()
 	printt(s.listen(3.3))
-	printt(s.eval("(+ 1 2 3)"))
-	printt(s.repl())
+	printt(s.eval("(number->string (+ 1 2 3))"))
+	#printt(s.repl())
 	printt(s.processInput(InputHandler.new()))
+
 	# Inject a GDScript class function into the cpp area
-	printt(s.registerFn(0, self, 'getNumber'))
-	s.registerFn(0, self, "getNumber")
+	# Why doesn't "self" work properly or as expected?  Hmm...
+	s.registerFn(0, InputHandler.new(), 'getInputs')
+	#printt(s.registerFn(0, self, 'getNumber'))
 
 func load_scm():
 	var fh = File.new()
@@ -33,6 +35,7 @@ func load_scm():
 func _ready():
 	printt ("Eeeeey")
 	scheme()
+	load_scm()
 
 func _process(delta):
 	pass
