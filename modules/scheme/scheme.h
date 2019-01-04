@@ -25,6 +25,7 @@ public:
   String eval (String scm);
   void repl ();
   void registerFn (int idx, Ref<Reference> customScriptInstance, String name);
+  int getNumber ();
   void add (int value);
   void reset ();
   int get_total () const;

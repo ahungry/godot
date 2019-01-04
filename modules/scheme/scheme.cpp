@@ -21,7 +21,9 @@ my_add (SCM num)
 }
 
 int registeredFnIdx = 0;
-Ref<Reference> registeredFnInstance = NULL;
+Ref<Reference> selfPtr;
+// https://www.sisik.eu/blog/godot/gd-native-calling-gdscript-method-from-cpp-code
+// godot_variant self;
 char registeredFnName[100];
 
 static SCM
@@ -29,13 +31,39 @@ my_fn (SCM name)
 {
   char* result = scm_to_stringn (name, NULL, "ascii", SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE);
   cout << "Call my-fn as: " << result << endl;
-  Variant ret = registeredFnInstance->call(result);
+  Variant ret = (selfPtr)->call("getNumber");
+  // Variant ret = selfPtr->call("getNumber");
+  // Variant ret = (*registeredFnInstance)->call(result);
+  // See: https://stackoverflow.com/questions/1485983/calling-c-class-methods-via-a-function-pointer
+  // Variant ret = (selfPtr->*fnPtr)(result, 0, 0, 0, 0, 0);
+  cout << "I dun called it!" << endl;
   String res = ret.get_construct_string ();
+
+  cout << "Result of my-fn call was: " << res.c_str () << endl;
+
   std::wstring ws = res.c_str ();
   std::string s (ws.begin (), ws.end ());
   int i = atoi (s.c_str ());
 
   return scm_from_int (i);
+}
+
+int
+Scheme::getNumber ()
+{
+  Variant ret = (selfPtr)->call("getNumber");
+  int n = (int) ret;
+
+  cout << "It may not be right, but n was: " << n << endl;
+
+  String res = ret.get_construct_string ();
+  std::wstring ws = res.c_str ();
+  std::string s (ws.begin (), ws.end ());
+
+  cout << "Got some variant return from a class using getNumber call." << endl;
+  cout << s << endl;
+
+  return n;
 }
 
 // This needs to be an array or something, not just an override at last bind point.
@@ -46,9 +74,11 @@ Scheme::registerFn(int idx, Ref<Reference> customScriptInstance, String wname)
   std::string s (ws.begin (), ws.end ());
 
   registeredFnIdx = idx;
-  registeredFnInstance = customScriptInstance;
+  selfPtr = customScriptInstance;
 
   strcpy (registeredFnName, s.c_str ());
+
+  cout << "Registered Fn Name: " << s.c_str () << endl;
 }
 
 String
@@ -214,6 +244,7 @@ Scheme::_bind_methods ()
   ClassDB::bind_method (D_METHOD ("repl"), &Scheme::repl);
   ClassDB::bind_method (D_METHOD ("processInput", "customScriptInstance"), &Scheme::processInput);
   ClassDB::bind_method (D_METHOD ("registerFn", "idx", "customScriptInstance", "name"), &Scheme::registerFn);
+  ClassDB::bind_method (D_METHOD ("getNumber"), &Scheme::getNumber);
 }
 
 Scheme::Scheme ()
