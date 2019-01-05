@@ -75,7 +75,12 @@ class Schemer:
 	func _init(_that):
 		that = _that
 
-	func sline():
+	func line(sx, sy, dx, dy, _x):
+		printt("Called Schemer::line")
+		that.line(int(sx), int(sy), int(dx), int(dy))
+		that.update()
+
+	func sline(_1, _2, _3, _4, _5):
 		printt("In SLINE call for wrapper")
 		that.line(200, 200, 500, 500)
 		that.update()

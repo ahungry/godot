@@ -26,12 +26,23 @@ Ref<Reference> selfPtr;
 // godot_variant self;
 char registeredFnName[100];
 
+// If we ever go further than arity/5, something is probably wrong.
+// Also, we keep the call in/out simple and just use string in both directions.
+// If someone needs to parse it into a "thing" they do so, vs many calls.
+// TODO: Someday we should figure out array / list, and objects (hash/fn ptr)
 static SCM
-my_fn (SCM name)
+my_fn (SCM name, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
 {
   char* result = scm_to_stringn (name, NULL, "ascii", SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE);
-  cout << "Call my-fn as: " << result << endl;
-  Variant ret = (selfPtr)->call(result);
+  int a1 = scm_to_int (arg1);
+  int a2 = scm_to_int (arg2);
+  int a3 = scm_to_int (arg3);
+  int a4 = scm_to_int (arg4);
+  int a5 = scm_to_int (arg5);
+
+  cout << "Call my-fn as: " << result << a1 << a2 << a3 << a4 << a5 << endl;
+
+  Variant ret = (selfPtr)->call(result, a1, a2, a3, a4, a5);
   // Variant ret = selfPtr->call("getNumber");
   // Variant ret = (*registeredFnInstance)->call(result);
   // See: https://stackoverflow.com/questions/1485983/calling-c-class-methods-via-a-function-pointer
@@ -43,9 +54,10 @@ my_fn (SCM name)
 
   std::wstring ws = res.c_str ();
   std::string s (ws.begin (), ws.end ());
-  int i = atoi (s.c_str ());
+  // int i = atoi (s.c_str ());
 
-  return scm_from_int (i);
+  // return scm_from_int (i);
+  return scm_from_stringn (s.c_str (), NULL, "ascii", SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE);
 }
 
 int
@@ -144,7 +156,7 @@ guile_eval (void* data)
 
   // lets try to just bind any old cpp call in here we can reach via scheme
   scm_c_define_gsubr ("my-add", 1, 0, 0, (void*) &my_add);
-  scm_c_define_gsubr ("my-fn", 1, 0, 0, (void*) &my_fn);
+  scm_c_define_gsubr ("my-fn", 6, 0, 0, (void*) &my_fn);
 
   return scm_c_eval_string (eval);
 }

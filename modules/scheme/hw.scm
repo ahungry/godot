@@ -15,7 +15,17 @@
 (my-add (doubler 2))
 
 ;; Lets us call to a GDScript function we register
-(my-fn "sline")
+(my-fn "sline" 0 0 0 0 0)
+(my-fn "line" 0 0 0 0 0)
+
+;; Draw a rectangle, neat!
+(define (draw-rect)
+  (my-fn "line" 0 0 300 0 0)
+  (my-fn "line" 300 0 300 300 0)
+  (my-fn "line" 300 300 0 300 0)
+  (my-fn "line" 0 300 0 0 0))
+
+(draw-rect)
 
 (all-strings
  (doubler 5))
