@@ -54,10 +54,8 @@ my_fn (SCM name, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
 
   std::wstring ws = res.c_str ();
   std::string s (ws.begin (), ws.end ());
-  // int i = atoi (s.c_str ());
 
-  // return scm_from_int (i);
-  return scm_from_stringn (s.c_str (), NULL, "ascii", SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE);
+  return scm_from_utf8_string (s.c_str ());
 }
 
 int
