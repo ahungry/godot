@@ -85,6 +85,9 @@ class Schemer:
 		that.line(200, 200, 500, 500)
 		that.update()
 
+	func line_reset():
+		that.line_reset()
+
 # Hm, unable to send this to scheme, crashes if it receives a Node2D
 # vs a barebones class.
 class MyDraw extends Node2D:
@@ -92,6 +95,9 @@ class MyDraw extends Node2D:
 	var y = 0
 	var lines = [
 	]
+
+	func line_reset():
+		lines = []
 
 	func line(sx, sy, dx, dy):
 		lines.push_back([sx, sy, dx, dy])

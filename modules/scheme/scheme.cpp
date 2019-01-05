@@ -34,11 +34,11 @@ static SCM
 my_fn (SCM name, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
 {
   char* result = scm_to_stringn (name, NULL, "ascii", SCM_FAILED_CONVERSION_ESCAPE_SEQUENCE);
-  int a1 = scm_to_int (arg1);
-  int a2 = scm_to_int (arg2);
-  int a3 = scm_to_int (arg3);
-  int a4 = scm_to_int (arg4);
-  int a5 = scm_to_int (arg5);
+  int a1 = scm_is_eq (arg1, SCM_UNDEFINED) ? 0 : scm_to_int (arg1);
+  int a2 = scm_is_eq (arg2, SCM_UNDEFINED) ? 0 : scm_to_int (arg2);
+  int a3 = scm_is_eq (arg3, SCM_UNDEFINED) ? 0 : scm_to_int (arg3);
+  int a4 = scm_is_eq (arg4, SCM_UNDEFINED) ? 0 : scm_to_int (arg4);
+  int a5 = scm_is_eq (arg5, SCM_UNDEFINED) ? 0 : scm_to_int (arg5);
 
   cout << "Call my-fn as: " << result << a1 << a2 << a3 << a4 << a5 << endl;
 
@@ -156,7 +156,7 @@ guile_eval (void* data)
 
   // lets try to just bind any old cpp call in here we can reach via scheme
   scm_c_define_gsubr ("my-add", 1, 0, 0, (void*) &my_add);
-  scm_c_define_gsubr ("my-fn", 6, 0, 0, (void*) &my_fn);
+  scm_c_define_gsubr ("my-fn", 1, 5, 0, (void*) &my_fn);
 
   return scm_c_eval_string (eval);
 }
