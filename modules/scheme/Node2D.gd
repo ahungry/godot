@@ -1,6 +1,6 @@
 extends Node2D
 
-var xxx = InputHandler.new()
+var xxx = InputHandler.new(self)
 
 func getNumber():
 	return 99
@@ -40,6 +40,8 @@ func _ready():
 	printt ("Eeeeey")
 	scheme()
 	load_scm()
+	var d = MyDraw.new()
+	add_child(d)
 
 func _process(delta):
 	pass
@@ -48,9 +50,18 @@ func _process(delta):
 	# $Label.text = str(s.get_total())
 
 class InputHandler:
+	var that
+
+	func _init(_that):
+		that = _that
+
 	func getInputs():
 		printt("I was called from somewhere!")
-		return 1
+		return that.getNumber() + 1
 
 # var game = Game.new()
 # game.processInput(InputHandler.new())
+
+class MyDraw extends Node2D:
+	func _draw():
+		draw_line(Vector2(0, 0), Vector2(100, 100), Color(200,200,200), 2.0, false)
