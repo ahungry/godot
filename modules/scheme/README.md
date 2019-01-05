@@ -14,6 +14,12 @@ Run with:
 
 export LD_LIBRARY_PATH=`pwd`/bin/ ; ./bin/godot.x11.tools.64
 
+Maybe make some new export tepmlates to put in ~/.godot/templates?
+
+scons platform=x11 tools=no target=release
+
+Thanks to this link! https://godotengine.org/qa/12273/custom-c-module
+
 ```GDScript
 extends Node2D
 

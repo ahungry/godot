@@ -31,4 +31,13 @@ if ARGUMENTS.get('scheme_shared', 'no') == 'yes':
     env.Append(LIBPATH=['#bin'])
 else:
     # Static compilation
+    module_env.Append(CPPPATH='/usr/include/guile/2.2')
+    module_env.Append(CXXFLAGS='-fPIC -lguile-2.2 -lgc -pthread')
+    #module_env['LIBS'] = ['guile-2.2', 'gc']
+    env.Append(LIBS=['guile-2.2', 'gc'])
+    #shared_lib = module_env.SharedLibrary(target='#bin/scheme', source=sources)
+    #shared_lib_shim = shared_lib[0].name.rsplit('.', 1)[0]
+    #env.Append(LIBS=[shared_lib_shim])
+    #env.Append(LIBPATH=['#bin'])
+    # And the last part
     module_env.add_source_files(env.modules_sources, sources)
