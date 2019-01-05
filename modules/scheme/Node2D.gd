@@ -2,6 +2,15 @@ extends Node2D
 
 var xxx = InputHandler.new(self)
 
+# Make our "lib" of useful calls.
+var myDraw = MyDraw.new()
+
+# Inject to our basic wrapper
+var schemer = Schemer.new(myDraw)
+
+# Bind it to the custom module
+var s = Scheme.new()
+
 func getNumber():
 	return 99
 
@@ -25,8 +34,6 @@ func scheme():
 	pass
 
 func load_scm():
-	var s = Scheme.new()
-	s.registerFn(0, xxx, "getInputs")
 	var fh = File.new()
 	fh.open("res://hw.scm", fh.READ)
 	var scm = fh.get_as_text()
@@ -37,11 +44,10 @@ func load_scm():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	printt ("Eeeeey")
+	s.registerFn(0, schemer, "sline")
+	add_child(myDraw)
 	scheme()
 	load_scm()
-	var d = MyDraw.new()
-	add_child(d)
 
 func _process(delta):
 	pass
@@ -62,18 +68,37 @@ class InputHandler:
 # var game = Game.new()
 # game.processInput(InputHandler.new())
 
+# Solution for the below problem - make a 'proxy' class that extends nothing.
+class Schemer:
+	var that
+
+	func _init(_that):
+		that = _that
+
+	func sline():
+		printt("In SLINE call for wrapper")
+		that.line(200, 200, 500, 500)
+		that.update()
+
 # Hm, unable to send this to scheme, crashes if it receives a Node2D
 # vs a barebones class.
 class MyDraw extends Node2D:
 	var x = 0
 	var y = 0
+	var lines = [
+	]
 
 	func line(sx, sy, dx, dy):
+		lines.push_back([sx, sy, dx, dy])
+
+	func dl(sx, sy, dx, dy):
 		draw_line(Vector2(sx, sy), Vector2(dx, dy), Color(200,200,200), 2.0, false)
 
 	func _draw():
-		line(0, 0, x, y)
-		line(0, 0, y, x)
+		dl(0, 0, x, y)
+		dl(0, 0, y, x)
+		for l in lines:
+			dl(l[0], l[1], l[2], l[3])
 
 	func _process(delta):
 		x += 2

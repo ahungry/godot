@@ -5,7 +5,7 @@
 
 ;; Uncomment this to run a REPL for Geiser to connect to
 (use-modules (system repl server))
-(spawn-server (make-tcp-server-socket #:port 12345))
+(spawn-server (make-tcp-server-socket #:port 37146))
 
 (define (doubler n)
   (+ n n))
@@ -15,7 +15,7 @@
 (my-add (doubler 2))
 
 ;; Lets us call to a GDScript function we register
-(my-add (my-fn "getInputs"))
+(my-fn "sline")
 
 (all-strings
  (doubler 5))
