@@ -63,5 +63,17 @@ class InputHandler:
 # game.processInput(InputHandler.new())
 
 class MyDraw extends Node2D:
+	var x = 0
+	var y = 0
+
+	func line(sx, sy, dx, dy):
+		draw_line(Vector2(sx, sy), Vector2(dx, dy), Color(200,200,200), 2.0, false)
+
 	func _draw():
-		draw_line(Vector2(0, 0), Vector2(100, 100), Color(200,200,200), 2.0, false)
+		line(0, 0, x, y)
+		line(0, 0, y, x)
+
+	func _process(delta):
+		x += 2
+		y += 1
+		update()
