@@ -62,6 +62,8 @@ class InputHandler:
 # var game = Game.new()
 # game.processInput(InputHandler.new())
 
+# Hm, unable to send this to scheme, crashes if it receives a Node2D
+# vs a barebones class.
 class MyDraw extends Node2D:
 	var x = 0
 	var y = 0
